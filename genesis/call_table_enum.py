@@ -24,8 +24,12 @@ class GenesisCallTableEnum(BackgroundTaskThread):
         for func in self.bv:
             for block in func.medium_level_il.ssa_form:
                 for instr in block:
-                    # If it's a call or jump and the operand contains addition
-                    if instr.operation in [MediumLevelILOperation.MLIL_CALL_UNTYPED_SSA, MediumLevelILOperation.MLIL_JUMP, MediumLevelILOperation.MLIL_GOTO]:
+                    branch_operations = [
+                        MediumLevelILOperation.MLIL_CALL_UNTYPED_SSA,
+                        MediumLevelILOperation.MLIL_JUMP,
+                        MediumLevelILOperation.MLIL_GOTO
+                    ]
+                    if instr.operation in branch_operations:
                         if type(instr.dest) == long:
                             continue
 
