@@ -28,8 +28,19 @@ class GenesisView(binaryview.BinaryView):
         return True
 
     def create_segments(self):
-        self.add_auto_segment(0, len(self.parent_view), 0,
-            len(self.parent_view), SegmentFlag.SegmentReadable|SegmentFlag.SegmentExecutable)
+        self.add_auto_segment(0, len(self.raw), 0,
+            len(self.raw), SegmentFlag.SegmentReadable|SegmentFlag.SegmentExecutable)
+
+    def create_sections(self):
+         self.add_auto_section(
+                "header", 0, 8,
+                SectionSemantics.ReadOnlyDataSectionSemantics)
+         self.add_auto_section(
+                "ivt", 8, 256,
+                SectionSemantics.ReadOnlyDataSectionSemantics)
+         self.add_auto_section(
+                "code", 0x200, len(self.raw)-0x200,
+                SectionSemantics.ReadOnlyCodeSectionSemantics)
 
     def create_functions(self):
         for idx in range(4, 252, 4):
@@ -49,8 +60,6 @@ class GenesisView(binaryview.BinaryView):
 
     def create_vector_table(self):
         uint32 = self.parse_type_string("uint32_t")[0]
-        self.create_datatype_and_name(0, 'OffInitialStack', uint32)
-        self.create_datatype_and_name(4, 'OffProgramStart', uint32)
         self.create_datatype_and_name(8, 'VectOffBusError', uint32)
         self.create_datatype_and_name(12, 'VectOffAddressError', uint32)
         self.create_datatype_and_name(16, 'VectOffIllegalInstruction', uint32)
@@ -114,7 +123,7 @@ class GenesisView(binaryview.BinaryView):
         self.create_datatype_and_name(248, 'VectUnused26', uint32)
         self.create_datatype_and_name(252, 'VectUnused27', uint32)
 
-    def create_header(self):
+    def create_information(self):
         uint32 = self.parse_type_string('uint32_t')[0]
         uint16 = self.parse_type_string('uint16_t')[0]
         char12 = self.parse_type_string('char foo[12]')[0]
@@ -137,14 +146,18 @@ class GenesisView(binaryview.BinaryView):
         self.create_datatype_and_name(444, 'Notes', char52)
         self.create_datatype_and_name(496, 'Region', char16)
 
+    def create_header(self):
+        uint32 = self.parse_type_string("uint32_t")[0]
+        self.create_datatype_and_name(0, 'OffInitialStack', uint32)
+        self.create_datatype_and_name(4, 'OffProgramStart', uint32)
+
     def init(self):
         try:
-            uint32 = self.parse_type_string("uint32_t")[0]
             self.create_segments()
-            self.create_vector_table()
-            self.create_datatype_and_name(0, 'OffInitialStack', uint32)
-            self.create_datatype_and_name(4, 'OffProgramStart', uint32)
+            self.create_sections()
             self.create_header()
+            self.create_vector_table()
+            self.create_information()
             self.create_functions()
             return True
         except Exception:
