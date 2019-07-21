@@ -36,10 +36,13 @@ class GenesisView(binaryview.BinaryView):
                 "header", 0, 8,
                 SectionSemantics.ReadOnlyDataSectionSemantics)
          self.add_auto_section(
-                "ivt", 8, 256,
+                "ivt", 8, 248,
                 SectionSemantics.ReadOnlyDataSectionSemantics)
          self.add_auto_section(
-                "code", 0x200, len(self.raw)-0x200,
+                "info", 256, 256,
+                SectionSemantics.ReadOnlyDataSectionSemantics)
+         self.add_auto_section(
+                "code", 512, len(self.raw)-512,
                 SectionSemantics.ReadOnlyCodeSectionSemantics)
 
     def create_functions(self):
