@@ -2,6 +2,12 @@ from binaryninja import *
 import struct
 import traceback
 
+__author__     = 'zznop'
+__copyright__  = 'Copyright 2019, zznop'
+__license__    = 'GPL'
+__version__    = '1.1'
+__email__      = 'zznop0x90@gmail.com'
+
 class GenesisView(binaryview.BinaryView):
     name = 'SG/SMD'
     long_name = 'SEGA Genesis/Megadrive ROM'
