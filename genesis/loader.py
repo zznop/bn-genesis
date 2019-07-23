@@ -27,6 +27,11 @@ class GenesisView(binaryview.BinaryView):
 
         return True
 
+    @classmethod
+    def get_load_settings_for_data(self, data):
+        load_settings_id = core.BNGetUniqueIdentifierString()
+        return core.BNAllocString(load_settings_id)
+
     def create_segments(self):
         self.add_auto_segment(0, len(self.raw), 0,
             len(self.raw), SegmentFlag.SegmentReadable|SegmentFlag.SegmentExecutable)
