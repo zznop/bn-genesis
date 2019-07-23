@@ -7,7 +7,7 @@ import struct
 __author__     = 'zznop'
 __copyright__  = 'Copyright 2019, zznop'
 __license__    = 'GPL'
-__version__    = '1.0'
+__version__    = '1.1'
 __email__      = 'zznop0x90@gmail.com'
 
 class GenesisCallTableEnum(BackgroundTaskThread):
