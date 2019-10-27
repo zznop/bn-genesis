@@ -17,6 +17,10 @@ def call_table_enum(view):
     cte = GenesisCallTableEnum(view)
     cte.start()
 
+def find_sprites(view):
+    spf = SpriteFinder(view)
+    spf.start()
+
 PluginCommand.register(
     'genesis: Fixup ROM checksum',
     'Fixup the SEGA Genesis ROM checksum',
@@ -39,4 +43,10 @@ PluginCommand.register(
     'genesis: Enumerate call tables',
     'Locate and disassemble call tables',
     call_table_enum
+)
+
+PluginCommand.register(
+    'genesis: Locate sprites',
+    'Locate sprites and tiles',
+    find_sprites
 )
