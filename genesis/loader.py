@@ -42,19 +42,40 @@ class GenesisView(binaryview.BinaryView):
         self.add_auto_segment(0, len(self.raw), 0,
             len(self.raw), SegmentFlag.SegmentReadable|SegmentFlag.SegmentExecutable)
 
+        # RAM Segment
+        self.add_auto_segment(0xff0000, 0xffff, 0,
+            0, SegmentFlag.SegmentReadable|SegmentFlag.SegmentWritable)
+
+        # Z80 Segment
+        self.add_auto_segment(0xa00000, 0x1ffff, 0,
+            0, SegmentFlag.SegmentReadable|SegmentFlag.SegmentWritable)
+
+        # VDP Segment
+        self.add_auto_segment(0xc00000, 0x20, 0,
+            0, SegmentFlag.SegmentReadable|SegmentFlag.SegmentWritable)
+
     def create_sections(self):
          self.add_auto_section(
-                "header", 0, 8,
-                SectionSemantics.ReadOnlyDataSectionSemantics)
+            "header", 0, 8,
+            SectionSemantics.ReadOnlyDataSectionSemantics)
          self.add_auto_section(
-                "ivt", 8, 248,
-                SectionSemantics.ReadOnlyDataSectionSemantics)
+            "ivt", 8, 248,
+            SectionSemantics.ReadOnlyDataSectionSemantics)
          self.add_auto_section(
-                "info", 256, 256,
-                SectionSemantics.ReadOnlyDataSectionSemantics)
+            "info", 256, 256,
+            SectionSemantics.ReadOnlyDataSectionSemantics)
          self.add_auto_section(
-                "code", 512, len(self.raw)-512,
-                SectionSemantics.ReadOnlyCodeSectionSemantics)
+            "code", 512, len(self.raw)-512,
+            SectionSemantics.ReadOnlyCodeSectionSemantics)
+         self.add_auto_section(
+            "ram", 0xff0000, 0xffff,
+            SectionSemantics.ReadWriteDataSectionSemantics)
+         self.add_auto_section(
+            "z80", 0xa00000, 0x1ffff,
+            SectionSemantics.ReadWriteDataSectionSemantics)
+         self.add_auto_section(
+            "vdp", 0xc00000, 0x20,
+            SectionSemantics.ReadWriteDataSectionSemantics)
 
     def create_functions(self):
         for idx in range(4, 252, 4):
