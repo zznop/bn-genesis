@@ -2,7 +2,7 @@
     "pluginmetadataversion": 1,
     "name": "genesis",
     "type": ["patch" ],
-    "api": ["python2", "python3"],
+    "api": ["python3"],
     "description": "SEGA Megadrive/Genesis ROM Hacking Toolkit",
     "longdescription": "Suite of plugins for SEGA Megadrive/Genesis ROM hacking and Motorola 68000 binary patching",
     "license": {
@@ -12,8 +12,9 @@
     },
     "platforms": ["Linux"],
     "dependencies": {
+        "other" : "This package requires the binaryninja-m68k plugin and the gcc-m68k-linux-gnu toolchain"
     },
-    "version": "1.1",
+    "version": "1.2",
     "author": "zznop",
     "minimumbinaryninjaversion": 0
 }

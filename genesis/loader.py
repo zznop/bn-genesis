@@ -1,19 +1,16 @@
-from binaryninja import *
+from binaryninja import (binaryview, Architecture, core, SegmentFlag,
+                         SectionSemantics, Symbol, SymbolType, log)
 import struct
 import traceback
 
-__author__     = 'zznop'
-__copyright__  = 'Copyright 2019, zznop'
-__license__    = 'GPL'
-__version__    = '1.1'
-__email__      = 'zznop0x90@gmail.com'
 
 class GenesisView(binaryview.BinaryView):
     name = 'SG/SMD'
     long_name = 'SEGA Genesis/Megadrive ROM'
 
     def __init__(self, data):
-        binaryview.BinaryView.__init__(self, parent_view=data, file_metadata=data.file)
+        binaryview.BinaryView.__init__(self, parent_view=data,
+                                       file_metadata=data.file)
         self.platform = Architecture['M68000'].standalone_platform
         self.raw = data
 
@@ -39,41 +36,49 @@ class GenesisView(binaryview.BinaryView):
         return core.BNAllocString(load_settings_id)
 
     def create_segments(self):
-        self.add_auto_segment(0, len(self.raw), 0,
-            len(self.raw), SegmentFlag.SegmentReadable|SegmentFlag.SegmentExecutable)
+        self.add_auto_segment(
+            0, len(self.raw), 0, len(self.raw),
+            SegmentFlag.SegmentReadable | SegmentFlag.SegmentExecutable
+        )
 
         # RAM Segment
-        self.add_auto_segment(0xff0000, 0xffff, 0,
-            0, SegmentFlag.SegmentReadable|SegmentFlag.SegmentWritable)
+        self.add_auto_segment(
+            0xff0000, 0xffff, 0, 0,
+            SegmentFlag.SegmentReadable | SegmentFlag.SegmentWritable
+        )
 
         # Z80 Segment
-        self.add_auto_segment(0xa00000, 0x1ffff, 0,
-            0, SegmentFlag.SegmentReadable|SegmentFlag.SegmentWritable)
+        self.add_auto_segment(
+            0xa00000, 0x1ffff, 0, 0,
+            SegmentFlag.SegmentReadable | SegmentFlag.SegmentWritable
+        )
 
         # VDP Segment
-        self.add_auto_segment(0xc00000, 0x20, 0,
-            0, SegmentFlag.SegmentReadable|SegmentFlag.SegmentWritable)
+        self.add_auto_segment(
+            0xc00000, 0x20, 0, 0,
+            SegmentFlag.SegmentReadable | SegmentFlag.SegmentWritable
+        )
 
     def create_sections(self):
-         self.add_auto_section(
+        self.add_auto_section(
             "header", 0, 8,
             SectionSemantics.ReadOnlyDataSectionSemantics)
-         self.add_auto_section(
+        self.add_auto_section(
             "ivt", 8, 248,
             SectionSemantics.ReadOnlyDataSectionSemantics)
-         self.add_auto_section(
+        self.add_auto_section(
             "info", 256, 256,
             SectionSemantics.ReadOnlyDataSectionSemantics)
-         self.add_auto_section(
+        self.add_auto_section(
             "code", 512, len(self.raw)-512,
             SectionSemantics.ReadOnlyCodeSectionSemantics)
-         self.add_auto_section(
+        self.add_auto_section(
             "ram", 0xff0000, 0xffff,
             SectionSemantics.ReadWriteDataSectionSemantics)
-         self.add_auto_section(
+        self.add_auto_section(
             "z80", 0xa00000, 0x1ffff,
             SectionSemantics.ReadWriteDataSectionSemantics)
-         self.add_auto_section(
+        self.add_auto_section(
             "vdp", 0xc00000, 0x20,
             SectionSemantics.ReadWriteDataSectionSemantics)
 
@@ -83,14 +88,20 @@ class GenesisView(binaryview.BinaryView):
             self.add_function(addr)
             if idx == 4:
                 self.add_entry_point(addr)
-                self.define_auto_symbol(Symbol(SymbolType.FunctionSymbol, addr, "_start"))
+                self.define_auto_symbol(
+                    Symbol(SymbolType.FunctionSymbol, addr, "_start")
+                )
             elif idx == 112:
-                self.define_auto_symbol(Symbol(SymbolType.FunctionSymbol, addr, "hblank"))
+                self.define_auto_symbol(
+                    Symbol(SymbolType.FunctionSymbol, addr, "hblank")
+                )
             elif idx == 120:
-                self.define_auto_symbol(Symbol(SymbolType.FunctionSymbol, addr, "vblank"))
+                self.define_auto_symbol(
+                    Symbol(SymbolType.FunctionSymbol, addr, "vblank")
+                )
 
     def create_datatype_and_name(self, addr, name, _type):
-        self.define_user_data_var(addr, _type) 
+        self.define_user_data_var(addr, _type)
         self.define_auto_symbol(Symbol(SymbolType.DataSymbol, addr, name))
 
     def create_vector_table(self):
