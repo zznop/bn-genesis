@@ -1,7 +1,7 @@
 {
-    "pluginmetadataversion": 1,
+    "pluginmetadataversion": 2,
     "name": "genesis",
-    "type": ["patch" ],
+    "type": ["ui", "helper"],
     "api": ["python3"],
     "description": "SEGA Megadrive/Genesis ROM Hacking Toolkit",
     "longdescription": "Suite of plugins for SEGA Megadrive/Genesis ROM hacking and Motorola 68000 binary patching",
@@ -16,5 +16,5 @@
     },
     "version": "1.2",
     "author": "zznop",
-    "minimumbinaryninjaversion": 0
+    "minimumbinaryninjaversion": 1200
 }
